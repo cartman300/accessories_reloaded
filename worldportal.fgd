@@ -1,0 +1,5 @@
+@PointClass = func_worldportal : "Portal2 world portal equivalent"
+[
+	pair(integer): "Portal pair" : 0 : "The portal this portal links to"
+	direction(vector) : "Facing direction" : "0 0 0"
+]

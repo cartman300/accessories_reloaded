@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+	"name"				"Accessories Reloaded" 
+	"version"			"Pi/2"
+	"author_name"		"Cartman300"
+	"author_email"		"cartman300@net.hr"
+	"author_url"		"cartman300.tumblr.com"
+	"info"				"Usefull crap for everyday use"
+}
