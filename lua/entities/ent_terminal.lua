@@ -13,7 +13,7 @@ ENT.Category = "Stargate";
 
 function ENT:OnRemove()
 	if (CLIENT) then
-		Terminal[ self:EntIndex() ] = nil;
+		if (Terminal != nil) then Terminal[ self:EntIndex() ] = nil; end
 	end;
 end;
 
@@ -55,9 +55,10 @@ if (SERVER) then
 		self:SetActive(false);
 		self.HEALTH = 200
 
-		for k,v in pairs(Terminal.os["default"]) do
+		if (Terminal != nil) then for k,v in pairs(Terminal.os["default"]) do
 			self[k] = v;
-		end
+		end end
+		
 		self:SetCanWork(true)
 
 		local physicsObject = self:GetPhysicsObject();
