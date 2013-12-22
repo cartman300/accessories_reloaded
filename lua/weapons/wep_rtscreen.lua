@@ -1,26 +1,58 @@
+if SERVER then
+	AddCSLuaFile();
+end
+
 SWEP.PrintName = "RT Screen"
-SWEP.Category = "Other"
 SWEP.Author = "Cartman300"
 SWEP.Contact = "cartman300@net.hr"
-SWEP.Purpose = "RT Screen"
-SWEP.Instructions = "RT Screen you carry around!"
 
+SWEP.Slot = 1
+SWEP.SlotPos = 9
+SWEP.DrawAmmo = false
+SWEP.DrawCrosshair = false
 SWEP.HoldType = "pistol"
-SWEP.ViewModelFOV = 57.086614173228
+SWEP.ViewModelFOV = 70
 SWEP.ViewModelFlip = false
-SWEP.ViewModel = "models/weapons/v_fists_t.mdl"
-SWEP.WorldModel = "models/weapons/w_dsword.mdl"
+SWEP.ViewModel = "models/weapons/v_pistol.mdl"
+SWEP.WorldModel = "models/props_phx/rt_screen.mdl"
+
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = true
 SWEP.IronSightsPos = Vector(0, 0, 0)
 SWEP.IronSightsAng = Vector(0, 0, 0)
+
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = -1
+SWEP.Primary.Automatic = false
+SWEP.Primary.Ammo	= "none"
+SWEP.Secondary.ClipSize = -1
+SWEP.Secondary.DefaultClip = -1
+SWEP.Secondary.Automatic = false
+SWEP.Secondary.Ammo	= "none"
+SWEP.IsHolstered = true
+
+function SWEP:PrimaryAttack()
+	if (self.IsHolstered) then
+		self.IsHolstered = false
+		-- TODO
+	end
+end
+
+function SWEP:SecondaryAttack()
+	if (not self.IsHolstered) then
+		self.IsHolstered = true
+		-- TODO
+	end
+end
+
 SWEP.ViewModelBoneMods = {
 	["Bone04"] = { scale = Vector(0.54, 0.54, 0.54), pos = Vector(6.984, 0, 0), angle = Angle(0, 0, 0) },
 	["Bone_Lefthand"] = { scale = Vector(0.698, 0.698, 0.698), pos = Vector(-30, 0, 0), angle = Angle(0, 0, 0) }
 }
 SWEP.VElements = {
-	["screen"] = { type = "Model", model = "models/props_phx/rt_screen.mdl", bone = "Bone01", rel = "", pos = Vector(2.138, 18.993, 5.53), angle = Angle(-24.512, 70.782, 177.85), size = Vector(0.344, 0.344, 0.344), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+	["screen"] = { type = "Model", model = "models/props_phx/rt_screen.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(4.816, 0.361, -2.142), angle = Angle(-96.658, 93.916, 2.888), size = Vector(0.465, 0.465, 0.465), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 }
+
 SWEP.WElements = {
 	["screen"] = { type = "Model", model = "models/props_phx/rt_screen.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(-0.45, 14.703, 1.965), angle = Angle(-11.25, 154.432, -180), size = Vector(0.453, 0.453, 0.453), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 }
@@ -63,7 +95,6 @@ function SWEP:Holster()
 			self:ResetBonePositions(vm)
 		end
 	end
-	
 	return true
 end
 
@@ -154,7 +185,7 @@ if CLIENT then
 	SWEP.wRenderOrder = nil
 	function SWEP:DrawWorldModel()
 		
-		if (self.ShowWorldModel == nil or self.ShowWorldModel) then
+		 if ((self.ShowWorldModel == nil or self.ShowWorldModel) and not IsValid(self.Owner)) then
 			self:DrawModel()
 		end
 		
