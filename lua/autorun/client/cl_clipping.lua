@@ -1,7 +1,4 @@
-local p = 0
-local y = 0
-	
-local d = 0
+local p,d,y = 0,0,0
 
 local mat = Material("models/debug/debugwhite")
 
@@ -26,9 +23,9 @@ hook.Add("PostDrawOpaqueRenderables","ClipPhysPreview",function()
 
 	local e = LocalPlayer():GetEyeTraceNoCursor().Entity
 	
-	if not ValidEntity(e) then end
+	if not IsValid(e) then end
 	if e:GetClass() ~= "prop_physics" then return end
-	if not ValidEntity(LocalPlayer()) then return end
+	if not IsValid(LocalPlayer()) then return end
 	if not LocalPlayer():GetActiveWeapon() or LocalPlayer():GetActiveWeapon():GetClass() ~= "gmod_tool" or GetConVarString("gmod_toolmode") ~= "clipplane" then return end
 	
 	local m = GetConVarNumber("clipplane_mirror",0) == 1
