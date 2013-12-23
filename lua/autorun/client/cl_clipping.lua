@@ -23,10 +23,10 @@ hook.Add("PostDrawOpaqueRenderables","ClipPhysPreview",function()
 
 	local e = LocalPlayer():GetEyeTraceNoCursor().Entity
 	
-	if not IsValid(e) then end
+	if not IsValid(e) then return end
 	if e:GetClass() ~= "prop_physics" then return end
 	if not IsValid(LocalPlayer()) then return end
-	if not LocalPlayer():GetActiveWeapon() or LocalPlayer():GetActiveWeapon():GetClass() ~= "gmod_tool" or GetConVarString("gmod_toolmode") ~= "clipplane" then return end
+	if not IsValid(LocalPlayer():GetActiveWeapon()) or LocalPlayer():GetActiveWeapon():GetClass() ~= "gmod_tool" or GetConVarString("gmod_toolmode") ~= "clipplane" then return end
 	
 	local m = GetConVarNumber("clipplane_mirror",0) == 1
 	
