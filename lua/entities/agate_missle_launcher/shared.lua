@@ -2,7 +2,8 @@ ENT.Type 			= "anim"
 ENT.Base 			= "base_gmodentity"
 ENT.PrintName		= "Missile Launcher"
 ENT.Author			= "Cartman300"
-ENT.Category		= "Stargate"
+ENT.Pack = "CAltP"
+ENT.Category = ENT.Pack
 
 ENT.Spawnable		= true
 ENT.AdminSpawnable	= true

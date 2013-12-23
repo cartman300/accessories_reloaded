@@ -4,7 +4,8 @@ ENT.Base = "base_gmodentity"
 ENT.PrintName = "Base Prop"
 ENT.Author = "Cartman300"
 ENT.Contact = "Cartman300@net.hr"
-ENT.Category = "CAltP"
+ENT.Pack = "CAltP"
+ENT.Category = ENT.Pack
 ENT.WireDebugName = "Base Prop"
 
 ENT.Spawnable = false

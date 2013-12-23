@@ -1,7 +1,8 @@
 ENT.Base = "sa_base"
 ENT.PrintName = "Screen"
 ENT.WireDebugName = "Screen"
-
+ENT.Pack = "CAltP"
+ENT.Category = ENT.Pack
 ENT.Spawnable = true
 ENT.AdminSpawnable = false
 

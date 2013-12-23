@@ -1,6 +1,7 @@
 ENT.Type 			= "anim"
 ENT.Base 			= "base_gmodentity"
-ENT.Category		= "Stargate"
+ENT.Pack = "CAltP"
+ENT.Category = ENT.Pack
 ENT.PrintName		= "Naquadah Missile"
 ENT.Author			= "thebigalex, Cartman300"
 

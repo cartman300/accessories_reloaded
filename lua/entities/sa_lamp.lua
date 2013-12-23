@@ -4,9 +4,10 @@ ENT.Base = "sa_base"
 ENT.PrintName = "SGC Lamp"
 ENT.Author = "Cartman300"
 ENT.Contact = "Cartman300@net.hr"
-ENT.Category = "Stargate"
+ENT.Pack = "CAltP"
+ENT.Category = ENT.Pack
 ENT.WireDebugName = "SGC Lamp"
-ENT.Pack = "Stargate"
+
 
 ENT.Spawnable = true
 ENT.AdminSpawnable = false
