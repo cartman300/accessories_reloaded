@@ -1,8 +1,41 @@
 local CHUD_LOADED = false
-local function CHUD_LOAD()
-	local MINIMAP = MINIMAP or false
-	local CHUD = CHUD or true
+
+local CHAT = CHAT or true
+local URL_TRIGGER = "!open"
+
+local MINIMAP = MINIMAP or false
+local CHUD = CHUD or false
+
+local function CHUD_CHAT_LOAD()
+	local LAST_URL = ""
 	
+	hook.Add("OnPlayerChat", "CHud_Chat", function(Player, Text, TeamChat, Dead)
+		if not CHAT then return nil end
+		if (Player == LocalPlayer() and Text == URL_TRIGGER) then
+			if (LAST_URL == "" or LAST_URL == nil or not LAST_URL:StartWith("http")) then
+				chat.AddText(nil, Color(100, 255, 100), "", "Last URL not valid.")
+			else gui.OpenURL(LAST_URL) end
+			return true
+		end
+		local URL = Text:match("(http://%S+)")
+		if (URL == nil) then URL = Text:match("(www%.%S+)") end
+		if (URL) then
+			chat.PlaySound()
+			timer.Simple(.1, function()
+				chat.AddText(nil, Color(100, 255, 100), "", "URL detected. Type " .. URL_TRIGGER)
+				if not URL:StartWith("http") then LAST_URL = "http://" .. URL else LAST_URL = URL end
+			end)
+		end
+		return nil
+	end)
+	
+	concommand.Add("cl_chud_chat", function()
+		CHAT = not CHAT
+		if (CHAT) then print("Enabled CHud Chat") else print("Disabled CHud Chat") end
+	end)
+end
+
+local function CHUD_LOAD()
 	surface.CreateFont("HUDFont", {
 		font = "dolce vita",
 		size = 32,
@@ -18,6 +51,14 @@ local function CHUD_LOAD()
 		shadow = false,
 		additive = false,
 		outline = false,
+	})
+	
+	surface.CreateFont ("HUDChat", {
+        size = 10,
+        weight = 390,
+        antialias = true,
+        shadow = false,
+        font = "coolvetica"
 	})
 	
 	local me = LocalPlayer()
@@ -114,34 +155,34 @@ local function CHUD_LOAD()
 	end)
 	
 	hook.Add("HUDShouldDraw", "CHud_HUDShouldDraw", function(name)
-		if (CHUD) then
-			if (name == "CHudHealth" or name == "CHudBattery") then
-				return false
-			end
-		end
+		if (CHUD and (name == "CHudHealth" or name == "CHudBattery")) then return false end
 		return true
 	end)
 	
-	concommand.Add("+minimap", function() MINIMAP = true end)
-	concommand.Add("-minimap", function() MINIMAP = false end)
-	concommand.Add("minimap", function() MINIMAP = not MINIMAP end)
+	concommand.Add("+cl_chud_minimap", function() MINIMAP = true end)
+	concommand.Add("-cl_chud_minimap", function() MINIMAP = false end)
+	concommand.Add("cl_chud_minimap", function() MINIMAP = not MINIMAP end)
 	
 	concommand.Add("+cl_chud", function() CHUD = true end)
 	concommand.Add("-cl_chud", function() CHUD = false end)
 	concommand.Add("cl_chud", function() CHUD = not CHUD end)
 	
 	concommand.Add("cl_chud_status", function()
-		print("CHUD open    = " .. tostring(CHUD))
-		print("Minimap open = " .. tostring(MINIMAP))
+		print("CHUD active     = " .. tostring(CHUD))
+		print("Minimap open    = " .. tostring(MINIMAP))
+		print("Chat active     = " .. tostring(CHAT))
 	end)
 end
 
 concommand.Add("cl_chud_load", function()
 	CHUD_LOADED = true
 	CHUD_LOAD()
+	CHUD_CHAT_LOAD()
 	if (CHUD_LOADED) then
 		print("CHUD Reloaded!");
 	else
 		print("CHUD Loaded!")
 	end
 end)
+
+CHUD_CHAT_LOAD()
