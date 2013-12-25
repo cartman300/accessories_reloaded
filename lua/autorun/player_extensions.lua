@@ -5,6 +5,8 @@ function Ply:Radiation()
 end
 
 if SERVER then
+	AddCSLuaFile()
+
 	hook.Add("PlayerSpawn", "RadDeathhandler", function(Ply)
 		Ply:SetRadiation(0)
 	end)
