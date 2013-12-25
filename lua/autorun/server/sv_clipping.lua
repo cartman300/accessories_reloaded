@@ -1,7 +1,4 @@
-
-
 AddCSLuaFile("autorun/client/cl_clipping.lua")
-AddCSLuaFile("autorun/client/clip_preview.lua")
 
 local function linePlaneIntersect(planePos,planeNorm,linePos1,linePos2,surfaceTbl)
 
