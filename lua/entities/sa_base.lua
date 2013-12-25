@@ -54,10 +54,8 @@ elseif (SERVER) then
 		
 		end
 	end
-
+	
 	function ENT:Think()
-		
-		
 		self.Entity:NextThink(CurTime()+1);
 		return true;
 	end

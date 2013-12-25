@@ -1,10 +1,11 @@
 local CHUD_LOADED = false
 
-local CHAT = CHAT or true
 local URL_TRIGGER = "!open"
 
 local MINIMAP = MINIMAP or false
-local CHUD = CHUD or false
+local CHUD = CHUD or true
+local CHAT = CHAT or true
+local RAD = RAD or true
 
 local function CHUD_CHAT_LOAD()
 	local LAST_URL = ""
@@ -68,55 +69,61 @@ local function CHUD_LOAD()
 	local Materials = {}
 	Materials.Health = Material("hud/health.png", "")
 	Materials.Energy = Material("hud/electric.png", "")
+	Materials.Radioactive = Material("hud/radioactive.png", "")
 	
-			local Draw = {}
-		Draw.Texture = function(Tex, X, Y, W, H, Col)
-			if (Col == nil) then
-				surface.SetDrawColor(255, 255, 255, 255)
-			else
-				surface.SetDrawColor(Col)
-			end
-			surface.SetMaterial(Tex)
-			surface.DrawTexturedRect(X, SH - Y, W, H)
+	local Draw = {}
+	Draw.Texture = function(Tex, X, Y, W, H, Col)
+		if (Col == nil) then
+			surface.SetDrawColor(255, 255, 255, 255)
+		else
+			surface.SetDrawColor(Col)
 		end
+		surface.SetMaterial(Tex)
+		surface.DrawTexturedRect(X, SH - Y, W, H)
+	end
 		
-		Draw.Text = function(Str, X, Y)
-			--surface.SetFont("HUDFont")
-			surface.SetTextColor(255, 255, 255, 255)
-			surface.SetTextPos(X, SH - Y)
-			surface.DrawText(Str)
-		end
-		
-		Draw.Rect = function(C, X, Y, W, H)
-			surface.SetDrawColor(C)
-			surface.DrawRect(X, SH - Y, W, H)
-		end
-		
-		Draw.HUDBox = function(Mat, T, X, Y, DoHide)
-			local num_T = tonumber(T)
-			if (DoHide and num_T <= 0) then return 0, 0; end -- If we hide and T <= 0 then don't show up and return 0, 0 size
-			surface.SetFont("HUDFont")
-			local w = surface.GetTextSize(T)
-			local b_W = w + 48
-			local b_H = 40
-			Draw.Rect(Color(0, 0, 0, 200), X, Y, b_W, b_H) -- Rectangle
-			local Clr = nil; if (num_T <= 10) then Clr = Color(255, 50, 50, 255) end -- Red color when T <= 10
-			Draw.Texture(Mat, X + 4, Y - 4, 32, 32, Clr) -- Icon
-			Draw.Text(T, X + 40, Y - 4) -- Text
-			return b_W, b_H -- return size
-		end
+	Draw.Text = function(Str, X, Y)
+		--surface.SetFont("HUDFont")
+		surface.SetTextColor(255, 255, 255, 255)
+		surface.SetTextPos(X, SH - Y)
+		surface.DrawText(Str)
+	end
+	
+	Draw.Rect = function(C, X, Y, W, H)
+		surface.SetDrawColor(C)
+		surface.DrawRect(X, SH - Y, W, H)
+	end
+	
+	Draw.HUDBox = function(Mat, T, X, Y, DoHide, ChangeColor, AddOffset)
+		local num_T = tonumber(T)
+		if (DoHide and num_T <= 0) then return 0, 0; end -- If we hide and T <= 0 then don't show up and return 0, 0 size
+		surface.SetFont("HUDFont")
+		local w = surface.GetTextSize(T or "")
+		local b_W = w + 48
+		local b_H = 40
+		Draw.Rect(Color(0, 0, 0, 200), X, Y, b_W, b_H) -- Rectangle
+		local Clr = nil; if (ChangeColor and num_T <= 10) then Clr = Color(255, 50, 50, 255) end -- Red color when T <= 10
+		Draw.Texture(Mat, X + 4, Y - 4, 32, 32, Clr) -- Icon
+		Draw.Text(T, X + 40, Y - 4) -- Text
+		return b_W + (AddOffset or 0), b_H -- return size
+	end
 		
 	hook.Add("PostDrawSkyBox", "Minimap_Skybox", function() if (MINIMAP) then render.Clear(0, 0, 0, 0, true, true) end end)
 	hook.Add("HUDPaint", "Minimap", function()			
 		if (CHUD) then
 			local p_Health = tostring(me:Health())
 			local p_Armor = tostring(me:Armor())
-			--local p_Ammo_Primary = tostring(1124)
-			--local p_Ammo_Secondary = tostring(12) -- Maybe one day
+			local p_Rad = tostring(me:Radiation())
 			
 			local h_W = Draw.HUDBox(Materials.Health, p_Health, 10, 50)
-			Draw.HUDBox(Materials.Energy, p_Armor, h_W + 15, 50, true)
+			local h_W2 = Draw.HUDBox(Materials.Energy, p_Armor, h_W + 15, 50, true, nil, 5)
+			local h_W3 = Draw.HUDBox(Materials.Radioactive, p_Rad, h_W + 15 + h_W2, 50)
 		end
+		
+		--[[if (not CHUD and RAD and LocalPlayer():ShouldShowGeiger()) then
+			local p_Rad = tostring(me:Radiation())
+			Draw.HUDBox(Materials.Radioactive, p_Rad, 100, 100)
+		end]]--
 		
 		if (MINIMAP) then
 			local Sw = SW - 32
@@ -167,10 +174,16 @@ local function CHUD_LOAD()
 	concommand.Add("-cl_chud", function() CHUD = false end)
 	concommand.Add("cl_chud", function() CHUD = not CHUD end)
 	
+	concommand.Add("cl_chud_geiger", function()
+		RAD = not RAD
+		if (RAD) then print("Enabled CHud Geiger") else print("Disabled CHud Geiger") end
+	end)
+	
 	concommand.Add("cl_chud_status", function()
 		print("CHUD active     = " .. tostring(CHUD))
 		print("Minimap open    = " .. tostring(MINIMAP))
 		print("Chat active     = " .. tostring(CHAT))
+		print("Geiger active   = " .. tostring(RAD))
 	end)
 end
 
