@@ -2,20 +2,17 @@ StarGate.LifeSupportAndWire(ENT); -- When you need to add LifeSupport and Wire c
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Base Prop"
+ENT.WireDebugName = ENT.PrintName
 ENT.Author = "Cartman300"
 ENT.Contact = "Cartman300@net.hr"
 ENT.Pack = "CAltP"
 ENT.Category = ENT.Pack
-ENT.WireDebugName = "Base Prop"
+
 
 ENT.Spawnable = false
 ENT.AdminSpawnable = false
 
 if (CLIENT) then
-	ENT.RenderGroup = RENDERGROUP_BOTH;
-	ENT.Category = "CAltP"
-	ENT.PrintName = "Base Entity"
-
 	function ENT:Draw()
 		self.Entity:DrawModel()
 	end

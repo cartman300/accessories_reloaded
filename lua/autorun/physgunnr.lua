@@ -1,5 +1,5 @@
 local function Physgunnr(p,e)
-	if(IsValid(e) and (e.AntiPhysgun)) then
+	if(IsValid(e) and (e.AntiPickup or e.IsBrush)) then
 		return false;
 	end
 end
