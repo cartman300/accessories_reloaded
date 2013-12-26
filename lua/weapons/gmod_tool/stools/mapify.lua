@@ -7,7 +7,7 @@ TOOL.Model = "none"
 if CLIENT then
 	language.Add("tool.mapify.name", "Mapify tool")
 	language.Add("tool.mapify.desc", "Makes props permanent! (Until map restart)")
-	language.Add("tool.mapify.0", "Left Click - Mapify, Right Click - Demapify, Reload - Make brush")
+	language.Add("tool.mapify.0", "Left Click - Mapify, Right Click - Demapify")
 end
 
 function TOOL:LeftClick(trace)
