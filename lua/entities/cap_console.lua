@@ -11,6 +11,7 @@ ENT.AdminSpawnable = false
 
 ENT.Light = false
 ENT.Screen = false
+ENT.LightDistance = 300
 
 if SERVER then
 
@@ -35,21 +36,20 @@ if SERVER then
 	end
 
 	function ENT:Think()
-		local ply = StarGate.FindPlayer(self:GetPos(), 300);
+		local ply = StarGate.FindPlayer(self:GetPos(), self.LightDistance);
 
 		if (ply and not self.Light) then
 			self.Light = true;
 			self:SetSkin(1);
-			self:SetNWBool("Light", true)
-			local NWScreen = self:GetNWBool("Screen")
-			if (NWScreen != self.Screen) then self:SetNWBool("Screen", self.Screen) end
 		elseif (not ply and self.Light) then
 			self.Light = false;
 			self:SetSkin(0);
-			self:SetNWBool("Light", false)
 		end
-
-		self:NextThink(CurTime() + 0.5);
+		
+		--local NWScreen = self:GetNWBool("Screen")
+		--if (NWScreen != self.Screen) then self:SetNWBool("Screen", self.Screen) end  -- Useless, SetNWBool isn't predicted
+		
+		self:NextThink(CurTime() + 0.2);
 		return true
 	end
 
@@ -73,9 +73,9 @@ else
 	end
 	
 	function ENT:Think()
-		self.Light = self:GetNWBool("Light")
 		self.Screen = self:GetNWBool("Screen")
-		self:NextThink(CurTime() + 0.5)
+		self.Light = LocalPlayer():GetPos():Distance(self:GetPos()) <= self.LightDistance
+		self:NextThink(CurTime() + 0.2)
 	end
 
 end
