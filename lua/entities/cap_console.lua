@@ -11,10 +11,39 @@ ENT.AdminSpawnable = false
 
 ENT.Light = false
 ENT.Screen = false
+ENT.Editable = true
 ENT.LightDistance = 300
 
-if SERVER then
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Screen", { KeyName = "Screen", Edit = { type = "Boolean", order = 1 } })
+	self:NetworkVar("String", 0, "Text", { KeyName = "Text", Edit = { type = "String", order = 2 } })
+	self:NetworkVar("String", 1, "Font", { KeyName = "Font", Edit = { type = "String", order = 3 } })
+	
+	self:SetText("NO SIGNAL")
+	self:SetScreen(false)
+	self:SetFont("cap_console_font")
+end
 
+function ENT:TriggerInput(name, value)
+	if (name == "Screen") then
+		if (value <= 0) then
+			self.Screen = false
+		else
+			self.Screen = true
+		end
+		self:SetScreen(self.Screen)
+		self:SetWire("Screen", value)
+	elseif (name == "Text" or name == "Text [STRING]") then	
+		self:SetText(tostring(value))
+		self:SetWire("Text", tostring(value))
+	end
+end
+
+function ENT:SetKeyValue(k, v)
+	self:TriggerInput(k, v)
+end
+
+if (SERVER) then
 	if (StarGate==nil or StarGate.CheckModule==nil or not StarGate.CheckModule("extra")) then return end
 
 	AddCSLuaFile();
@@ -25,14 +54,14 @@ if SERVER then
 		self:SetSolid(SOLID_VPHYSICS);
 		self:SetUseType(SIMPLE_USE);
 		
-		self:CreateWireInputs("Screen");
+		self:CreateWireInputs("Screen", "Text [STRING]");
+		self:CreateWireOutputs("Screen", "Text [STRING]");
 	end
 	
-	function ENT:TriggerInput(name, value)
-		if (name == "Screen") then
-			if (value <= 0) then self.Screen = false else self.Screen = true end
-			self:SetNWBool("Screen", self.Screen)
-		end
+	function ENT:Use(ply)
+		local N = 0
+		if (not self.Screen) then N = 1 end
+		self:TriggerInput("Screen", N)
 	end
 
 	function ENT:Think()
@@ -46,15 +75,31 @@ if SERVER then
 			self:SetSkin(0);
 		end
 		
-		--local NWScreen = self:GetNWBool("Screen")
-		--if (NWScreen != self.Screen) then self:SetNWBool("Screen", self.Screen) end  -- Useless, SetNWBool isn't predicted
-		
 		self:NextThink(CurTime() + 0.2);
 		return true
 	end
 
-else
+elseif (CLIENT) then
+	ENT.Text = "NO SIGNAL"
+	ENT.Font = "cap_console_font"
 	
+	surface.CreateFont("cap_console_font", {
+		font = "System",
+		size = 10,
+		weight = 500,
+		blursize = 0,
+		scanlines = 0,
+		antialias = false,
+		underline = false,
+		italic = false,
+		strikeout = false,
+		symbol = false,
+		rotary = false,
+		shadow = false,
+		additive = false,
+		outline = false,
+	})
+
 	function ENT:Draw()
 		self:DrawModel()
 		
@@ -67,15 +112,18 @@ else
 			cam.Start3D2D(Pos, angle, 0.25);
 			surface.SetDrawColor(0, 0, 0, 200);
 			surface.DrawRect(-115, -145, 230, 140);
-			draw.SimpleText("NO SIGNAL", "CenterPrintText", 0, -75, Color(255, 255, 255), 1, 1);
+			if (not pcall(draw.DrawText, self.Text, self.Font, -110, -145, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)) then
+				self:SetFont("cap_console_font")
+			end
 			cam.End3D2D();
 		end
 	end
 	
 	function ENT:Think()
-		self.Screen = self:GetNWBool("Screen")
+		self.Screen = self:GetScreen()
+		self.Text = self:GetText()
+		self.Font = self:GetFont()
 		self.Light = LocalPlayer():GetPos():Distance(self:GetPos()) <= self.LightDistance
 		self:NextThink(CurTime() + 0.2)
 	end
-
 end
