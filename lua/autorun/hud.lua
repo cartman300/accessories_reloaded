@@ -9,3 +9,4 @@ end
 
 if (SERVER) then AddCSLuaFile() end
 Inc "hud/chat_url_parser.lua"
+-- Inc "hud/holo_map.lua" -- Nope

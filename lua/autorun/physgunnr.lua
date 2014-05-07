@@ -1,4 +1,4 @@
-AddCSLuaFile() -- Clientside prediction, works wonders.
+AddCSLuaFile() -- For clientside prediction, works wonders.
 
 local function Physgunnr(p,e)
 	if(IsValid(e) and (e.AntiPickup or e.IsBrush)) then
